@@ -1,7 +1,7 @@
 package main
 
 import (
-	"omaraha/utils"
+	"investments-tracker/utils"
 	"strconv"
 	"time"
 )

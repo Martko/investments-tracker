@@ -2,7 +2,7 @@ package mintos
 
 import (
 	"github.com/headzoo/surf/browser"
-	"omaraha/utils"
+	"investments-tracker/utils"
 )
 
 func Login(bow *browser.Browser) {

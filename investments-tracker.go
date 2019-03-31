@@ -3,8 +3,8 @@ package main
 import (
 	"github.com/headzoo/surf/browser"
 	"gopkg.in/headzoo/surf.v1"
-	"omaraha/mintos"
-	"omaraha/omaraha"
+	"investments-tracker/mintos"
+	"investments-tracker/omaraha"
 )
 
 func main() {

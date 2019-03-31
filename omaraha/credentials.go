@@ -2,7 +2,7 @@ package omaraha
 
 import (
 	"github.com/joho/godotenv"
-	"omaraha/utils"
+	"investments-tracker/utils"
 	"os"
 )
 

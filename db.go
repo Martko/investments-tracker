@@ -3,8 +3,8 @@ package main
 import (
 	"database/sql"
 	_ "github.com/go-sql-driver/mysql"
+	"investments-tracker/utils"
 	"log"
-	"omaraha/utils"
 )
 
 func getDbConnection() (db *sql.DB) {

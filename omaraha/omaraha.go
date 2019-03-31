@@ -3,7 +3,7 @@ package omaraha
 import (
 	"github.com/PuerkitoBio/goquery"
 	"github.com/headzoo/surf/browser"
-	"omaraha/utils"
+	"investments-tracker/utils"
 	"strconv"
 	"strings"
 )
