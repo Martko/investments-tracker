@@ -1,8 +1,15 @@
 package mintos
 
 import (
+	"github.com/PuerkitoBio/goquery"
 	"github.com/headzoo/surf/browser"
 	"investments-tracker/utils"
+	"strconv"
+)
+
+const (
+	intrestRowNum        = 5 // Interest received
+	intrestOnRebuyRowNum = 7 // Interest income on rebuy
 )
 
 func Login(bow *browser.Browser) {
@@ -22,13 +29,42 @@ func Login(bow *browser.Browser) {
 }
 
 func GetPortfolioValues(bow *browser.Browser, currentMonth int, currentYear int) Portfolio {
-	// https://www.mintos.com/en/account-statement/?account_statement_filter[fromDate]=01.03.2019&account_statement_filter[toDate]=31.03.2019&account_statement_filter[maxResults]=20
+	/*
+		currentMonthString := strconv.Itoa(currentMonth)
+		currentYearString := strconv.Itoa(currentYear)
 
-	return Portfolio{
-		152.42,
-		0,
-		152.42,
-	}
+		fromDate := "01." + currentMonthString + "." + currentYearString
+		toDate := "31." + currentMonthString + "." + currentYearString
+
+	*/
+	fromDate := "01.03.2019"
+	toDate := "31.03.2019"
+
+	err := bow.Open("https://www.mintos.com/en/account-statement/?" +
+		"account_statement_filter[fromDate]=" + fromDate + "" +
+		"&account_statement_filter[toDate]=" + toDate + "" +
+		"&account_statement_filter[maxResults]=20")
+
+	utils.HandleError(err)
+
+	var interestAmount float64
+
+	rowCount := 0
+	bow.Dom().Find("#overview-results table tbody tr").Each(func(_ int, s *goquery.Selection) {
+		if intrestRowNum == rowCount || intrestOnRebuyRowNum == rowCount {
+			interestAmount += getMonetaryValue(s.Find("span.mod-pointer").Text())
+		}
+		rowCount++
+	})
+
+	return Portfolio{interestAmount, 0, interestAmount}
+}
+
+func getMonetaryValue(value string) float64 {
+	returnValue, err := strconv.ParseFloat(value, 64)
+	utils.HandleError(err)
+
+	return returnValue
 }
 
 type Portfolio struct {

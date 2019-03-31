@@ -12,8 +12,8 @@ func main() {
 
 	currentMonth, currentYear := getCurrentMonth()
 
-	handleMintos(bow, currentMonth, currentYear)
-	//handleOmaraha(bow, currentMonth, currentYear)
+	//handleMintos(bow, currentMonth, currentYear)
+	handleOmaraha(bow, currentMonth, currentYear)
 
 }
 
