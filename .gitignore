@@ -16,3 +16,6 @@
 
 # JetBrains IDE config file
 .idea
+
+# 3rd party packages
+vendor
