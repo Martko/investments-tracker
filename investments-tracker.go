@@ -2,7 +2,6 @@ package main
 
 import (
 	"gopkg.in/headzoo/surf.v1"
-	"investments-tracker/funderbeam"
 	"investments-tracker/mintos"
 	"investments-tracker/omaraha"
 	"investments-tracker/utils"
