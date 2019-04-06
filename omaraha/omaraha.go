@@ -3,6 +3,7 @@ package omaraha
 import (
 	"github.com/PuerkitoBio/goquery"
 	"github.com/headzoo/surf/browser"
+	"investments-tracker/db"
 	"investments-tracker/utils"
 	"strconv"
 	"strings"
@@ -14,7 +15,7 @@ const (
 	lossRowNum        = 20 // Principal loss
 )
 
-func Login(bow *browser.Browser) {
+func login(bow *browser.Browser) {
 	err := bow.Open("https://omaraha.ee/en/auth/login/")
 	utils.HandleError(err)
 
@@ -30,7 +31,7 @@ func Login(bow *browser.Browser) {
 	utils.HandleError(err)
 }
 
-func GetPortfolioValues(bow *browser.Browser, currentMonth int, currentYear int) Portfolio {
+func getPortfolioValues(bow *browser.Browser, currentMonth int, currentYear int) Portfolio {
 	err := bow.Open("https://omaraha.ee/en/invest/stats/")
 	utils.HandleError(err)
 
@@ -68,6 +69,20 @@ func getMonetaryValue(value string) float64 {
 	utils.HandleError(err)
 
 	return returnValue
+}
+
+func FetchAndSaveToDb(bow *browser.Browser, currentMonth int, currentYear int) {
+	login(bow)
+	portfolio := getPortfolioValues(bow, currentMonth, currentYear)
+
+	db.InsertOrUpdateDatabase(db.DbEntry{
+		"omaraha",
+		currentMonth,
+		currentYear,
+		portfolio.InterestAmount,
+		portfolio.LossAmount,
+		portfolio.NetProfit,
+	})
 }
 
 type Portfolio struct {

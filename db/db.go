@@ -1,4 +1,4 @@
-package main
+package db
 
 import (
 	"database/sql"
@@ -20,7 +20,7 @@ func getDbConnection() (db *sql.DB) {
 	return db
 }
 
-func insertOrUpdateDatabase(values dbEntry) {
+func InsertOrUpdateDatabase(values DbEntry) {
 	db := getDbConnection()
 	selectQuery := `
 		SELECT
@@ -34,7 +34,7 @@ func insertOrUpdateDatabase(values dbEntry) {
 	    LIMIT 1`
 
 	var id int
-	err := db.QueryRow(selectQuery, values.source, values.month, values.year).Scan(&id)
+	err := db.QueryRow(selectQuery, values.Source, values.Month, values.Year).Scan(&id)
 
 	if err != nil {
 		if err == sql.ErrNoRows {
@@ -49,7 +49,7 @@ func insertOrUpdateDatabase(values dbEntry) {
 	defer db.Close()
 }
 
-func insertValues(values dbEntry, db *sql.DB) {
+func insertValues(values DbEntry, db *sql.DB) {
 	preparedStatement, err := db.Prepare(`
 		INSERT INTO 
 			interests(source, month, year, interest_amount, loss_amount, net_profit)
@@ -58,17 +58,17 @@ func insertValues(values dbEntry, db *sql.DB) {
 	utils.HandleError(err)
 
 	preparedStatement.Exec(
-		values.source,
-		values.month,
-		values.year,
-		values.interestAmount,
-		values.lossAmount,
-		values.netProfit)
+		values.Source,
+		values.Month,
+		values.Year,
+		values.InterestAmount,
+		values.LossAmount,
+		values.NetProfit)
 
 	log.Println("inserted to database", values)
 }
 
-func updateValues(values dbEntry, rowId int, db *sql.DB) {
+func updateValues(values DbEntry, rowId int, db *sql.DB) {
 	preparedStatement, err := db.Prepare(`
 		UPDATE
 			interests
@@ -83,20 +83,20 @@ func updateValues(values dbEntry, rowId int, db *sql.DB) {
 	utils.HandleError(err)
 
 	preparedStatement.Exec(
-		values.interestAmount,
-		values.lossAmount,
-		values.netProfit,
+		values.InterestAmount,
+		values.LossAmount,
+		values.NetProfit,
 		rowId)
 
 	utils.HandleError(err)
 	log.Println("values updated", values)
 }
 
-type dbEntry struct {
-	source         string
-	month          int
-	year           int
-	interestAmount float64
-	lossAmount     float64
-	netProfit      float64
+type DbEntry struct {
+	Source         string
+	Month          int
+	Year           int
+	InterestAmount float64
+	LossAmount     float64
+	NetProfit      float64
 }

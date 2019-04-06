@@ -1,15 +1,14 @@
-package main
+package utils
 
 import (
-	"investments-tracker/utils"
 	"strconv"
 	"time"
 )
 
-func getCurrentMonth() (int, int) {
+func GetCurrentMonth() (int, int) {
 	now := time.Now()
 	currentMonth, err := strconv.Atoi(now.Format("1"))
-	utils.HandleError(err)
+	HandleError(err)
 
 	currentYear := now.Year()
 

@@ -3,6 +3,7 @@ package mintos
 import (
 	"github.com/PuerkitoBio/goquery"
 	"github.com/headzoo/surf/browser"
+	"investments-tracker/db"
 	"investments-tracker/utils"
 	"strconv"
 )
@@ -12,7 +13,7 @@ const (
 	intrestOnRebuyRowNum = 7 // Interest income on rebuy
 )
 
-func Login(bow *browser.Browser) {
+func login(bow *browser.Browser) {
 	err := bow.Open("https://www.mintos.com/en/login")
 	utils.HandleError(err)
 
@@ -28,7 +29,7 @@ func Login(bow *browser.Browser) {
 	utils.HandleError(err)
 }
 
-func GetPortfolioValues(bow *browser.Browser, currentMonth int, currentYear int) Portfolio {
+func getPortfolioValues(bow *browser.Browser, currentMonth int, currentYear int) Portfolio {
 	/*
 		currentMonthString := strconv.Itoa(currentMonth)
 		currentYearString := strconv.Itoa(currentYear)
@@ -58,6 +59,20 @@ func GetPortfolioValues(bow *browser.Browser, currentMonth int, currentYear int)
 	})
 
 	return Portfolio{interestAmount, 0, interestAmount}
+}
+
+func FetchAndSaveToDb(bow *browser.Browser, currentMonth int, currentYear int) {
+	login(bow)
+	portfolio := getPortfolioValues(bow, currentMonth, currentYear)
+
+	db.InsertOrUpdateDatabase(db.DbEntry{
+		"mintos",
+		currentMonth,
+		currentYear,
+		portfolio.InterestAmount,
+		portfolio.LossAmount,
+		portfolio.NetProfit,
+	})
 }
 
 func getMonetaryValue(value string) float64 {
