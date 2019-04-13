@@ -1,10 +1,10 @@
 package omaraha
 
 import (
+	"github.com/Martko/investments-tracker/db"
+	"github.com/Martko/investments-tracker/utils"
 	"github.com/PuerkitoBio/goquery"
 	"github.com/headzoo/surf/browser"
-	"investments-tracker/db"
-	"investments-tracker/utils"
 	"strconv"
 	"strings"
 )

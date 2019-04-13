@@ -2,8 +2,8 @@ package db
 
 import (
 	"database/sql"
+	"github.com/Martko/investments-tracker/utils"
 	_ "github.com/go-sql-driver/mysql"
-	"investments-tracker/utils"
 	"log"
 )
 

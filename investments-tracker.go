@@ -1,9 +1,9 @@
 package main
 
 import (
+	"github.com/Martko/investments-tracker/omaraha"
+	"github.com/Martko/investments-tracker/utils"
 	"gopkg.in/headzoo/surf.v1"
-	"investments-tracker/omaraha"
-	"investments-tracker/utils"
 )
 
 func main() {

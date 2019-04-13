@@ -1,8 +1,8 @@
 package db
 
 import (
+	"github.com/Martko/investments-tracker/utils"
 	"github.com/joho/godotenv"
-	"investments-tracker/utils"
 	"os"
 )
 
