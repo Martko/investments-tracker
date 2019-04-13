@@ -31,7 +31,7 @@ func login(bow *browser.Browser) {
 	utils.HandleError(err)
 }
 
-func getPortfolioValues(bow *browser.Browser, currentMonth int, currentYear int) Portfolio {
+func getInterestValues(bow *browser.Browser, currentMonth int) Portfolio {
 	err := bow.Open("https://omaraha.ee/en/invest/stats/")
 	utils.HandleError(err)
 
@@ -71,22 +71,28 @@ func getMonetaryValue(value string) float64 {
 	return returnValue
 }
 
-func FetchAndSaveToDb(bow *browser.Browser, currentMonth int, currentYear int) {
+func FetchAndSaveToDb(bow *browser.Browser, currentDay int, currentMonth int, currentYear int) {
 	login(bow)
-	portfolio := getPortfolioValues(bow, currentMonth, currentYear)
+	portfolio := getInterestValues(bow, currentMonth)
+	connection := db.GetDbConnection()
 
-	db.InsertOrUpdateDatabase(db.DbEntry{
-		"omaraha",
-		currentMonth,
-		currentYear,
-		portfolio.InterestAmount,
-		portfolio.LossAmount,
-		portfolio.NetProfit,
-	})
+	mTotal, mLoss, mNet := db.GetInterestValuesByMonthYear(connection, currentMonth, currentYear)
+
+	total := portfolio.Total - mTotal
+	loss := portfolio.Loss - mLoss
+	net := portfolio.Net - mNet
+
+	db.InsertValues(db.Entry{
+		Date:   "2019-04-12",
+		Source: "omaraha",
+		Total:  total,
+		Loss:   loss,
+		Net:    net,
+	}, connection)
 }
 
 type Portfolio struct {
-	InterestAmount float64
-	LossAmount     float64
-	NetProfit      float64
+	Total float64
+	Loss  float64
+	Net   float64
 }

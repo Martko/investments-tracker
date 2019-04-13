@@ -5,12 +5,13 @@ import (
 	"time"
 )
 
-func GetCurrentMonth() (int, int) {
+func GetCurrentDate() (int, int, int) {
 	now := time.Now()
 	currentMonth, err := strconv.Atoi(now.Format("1"))
 	HandleError(err)
 
 	currentYear := now.Year()
+	currentDay := now.Day()
 
-	return currentMonth, currentYear
+	return currentDay, currentMonth, currentYear
 }

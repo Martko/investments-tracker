@@ -7,7 +7,7 @@ import (
 	"log"
 )
 
-func getDbConnection() (db *sql.DB) {
+func GetDbConnection() (db *sql.DB) {
 	dbUser, dbPass, dbName := getDatabaseCredentials()
 
 	db, err := sql.Open("mysql", dbUser+":"+dbPass+"@/"+dbName)
@@ -20,83 +20,54 @@ func getDbConnection() (db *sql.DB) {
 	return db
 }
 
-func InsertOrUpdateDatabase(values DbEntry) {
-	db := getDbConnection()
+func GetInterestValuesByMonthYear(db *sql.DB, month int, year int) (total, loss, net float64) {
 	selectQuery := `
 		SELECT
-			id
-	    FROM
-	    	interests
-	    WHERE
-	    	source = ? AND
-	    	month = ? AND 
-	    	year = ? 
-	    LIMIT 1`
+			total,
+			loss,
+			net
+		FROM
+			monthly_interests
+		WHERE
+			source='omaraha' AND 
+			month=? AND
+			year=?
+		LIMIT 1`
 
-	var id int
-	err := db.QueryRow(selectQuery, values.Source, values.Month, values.Year).Scan(&id)
-
+	err := db.QueryRow(selectQuery, month, year).Scan(&total, &loss, &net)
 	if err != nil {
 		if err == sql.ErrNoRows {
-			insertValues(values, db)
+			return 0, 0, 0
 		} else {
 			utils.HandleError(err)
 		}
-	} else {
-		updateValues(values, id, db)
 	}
 
-	defer db.Close()
+	return total, loss, net
 }
 
-func insertValues(values DbEntry, db *sql.DB) {
+func InsertValues(values Entry, db *sql.DB) {
 	preparedStatement, err := db.Prepare(`
 		INSERT INTO 
-			interests(source, month, year, interest_amount, loss_amount, net_profit)
-			VALUES(?,?,?,?,?,?)
+			daily_interests(date, source, total, loss, net)
+			VALUES(?,?,?,?,?)
 	`)
 	utils.HandleError(err)
 
-	preparedStatement.Exec(
+	_, _ = preparedStatement.Exec(
+		values.Date,
 		values.Source,
-		values.Month,
-		values.Year,
-		values.InterestAmount,
-		values.LossAmount,
-		values.NetProfit)
+		values.Total,
+		values.Loss,
+		values.Net)
 
 	log.Println("inserted to database", values)
 }
 
-func updateValues(values DbEntry, rowId int, db *sql.DB) {
-	preparedStatement, err := db.Prepare(`
-		UPDATE
-			interests
-		SET
-			interest_amount=?,
-			loss_amount=?,
-			net_profit=?
-		WHERE
-			id=?
-	`)
-
-	utils.HandleError(err)
-
-	preparedStatement.Exec(
-		values.InterestAmount,
-		values.LossAmount,
-		values.NetProfit,
-		rowId)
-
-	utils.HandleError(err)
-	log.Println("values updated", values)
-}
-
-type DbEntry struct {
-	Source         string
-	Month          int
-	Year           int
-	InterestAmount float64
-	LossAmount     float64
-	NetProfit      float64
+type Entry struct {
+	Date   string
+	Source string
+	Total  float64
+	Loss   float64
+	Net    float64
 }
