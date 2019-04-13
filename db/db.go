@@ -53,15 +53,19 @@ func InsertValues(values Entry, db *sql.DB) {
 			VALUES(?,?,?,?,?)
 	`)
 	utils.HandleError(err)
+	defer preparedStatement.Close()
 
-	_, _ = preparedStatement.Exec(
+	res, _ := preparedStatement.Exec(
 		values.Date,
 		values.Source,
 		values.Total,
 		values.Loss,
 		values.Net)
 
+	affectedRows, _ := res.RowsAffected()
+
 	log.Println("inserted to database", values)
+	log.Println("rows affected", affectedRows)
 }
 
 type Entry struct {
