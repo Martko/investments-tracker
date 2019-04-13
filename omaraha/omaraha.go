@@ -83,7 +83,7 @@ func FetchAndSaveToDb(bow *browser.Browser, currentDay int, currentMonth int, cu
 	net := portfolio.Net - mNet
 
 	db.InsertValues(db.Entry{
-		Date:   "2019-04-12",
+		Date:   utils.GetYesterdayYmd(),
 		Source: "omaraha",
 		Total:  total,
 		Loss:   loss,

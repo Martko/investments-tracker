@@ -5,13 +5,18 @@ import (
 	"time"
 )
 
-func GetCurrentDate() (int, int, int) {
-	now := time.Now()
-	currentMonth, err := strconv.Atoi(now.Format("1"))
+func GetYesterdayDate() (int, int, int) {
+	yesterday := time.Now().AddDate(0, 0, -1)
+	month, err := strconv.Atoi(yesterday.Format("1"))
 	HandleError(err)
 
-	currentYear := now.Year()
-	currentDay := now.Day()
+	year := yesterday.Year()
+	day := yesterday.Day()
 
-	return currentDay, currentMonth, currentYear
+	return day, month, year
+}
+
+func GetYesterdayYmd() string {
+	yesterday := time.Now().AddDate(0, 0, -1)
+	return yesterday.Format("2006-01-02") // Y-m-d
 }

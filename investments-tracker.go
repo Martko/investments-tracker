@@ -9,7 +9,7 @@ import (
 func main() {
 	bow := surf.NewBrowser()
 
-	currentDay, currentMonth, currentYear := utils.GetCurrentDate()
+	day, month, year := utils.GetYesterdayDate()
 
-	omaraha.FetchAndSaveToDb(bow, currentDay, currentMonth, currentYear)
+	omaraha.FetchAndSaveToDb(bow, day, month, year)
 }
