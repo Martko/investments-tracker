@@ -1,12 +1,13 @@
 package omaraha
 
 import (
+	"strconv"
+	"strings"
+
 	"github.com/Martko/investments-tracker/db"
 	"github.com/Martko/investments-tracker/utils"
 	"github.com/PuerkitoBio/goquery"
 	"github.com/headzoo/surf/browser"
-	"strconv"
-	"strings"
 )
 
 const (
@@ -122,11 +123,12 @@ func FetchAndSaveToDb(bow *browser.Browser, currentDay int, currentMonth int, cu
 	net := portfolio.Net - mNet
 
 	db.InsertInterestValues(db.Entry{
-		Date:   utils.GetYesterdayYmd(),
-		Source: "omaraha",
-		Total:  total,
-		Loss:   loss,
-		Net:    net,
+		Date:       utils.GetYesterdayYmd(),
+		Source:     "omaraha",
+		AssetClass: "loans_secured",
+		Total:      total,
+		Loss:       loss,
+		Net:        net,
 	}, connection)
 
 	db.InsertPortfolioValues(db.PortfolioValueEntry{

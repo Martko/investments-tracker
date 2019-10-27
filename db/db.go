@@ -2,9 +2,10 @@ package db
 
 import (
 	"database/sql"
+	"log"
+
 	"github.com/Martko/investments-tracker/utils"
 	_ "github.com/go-sql-driver/mysql"
-	"log"
 )
 
 func GetDbConnection() (db *sql.DB) {
@@ -27,7 +28,7 @@ func GetInterestValuesByMonthYear(db *sql.DB, month int, year int) (total, loss,
 			loss,
 			net
 		FROM
-			monthly_interests
+			monthly_passive_income
 		WHERE
 			source='omaraha' AND 
 			month=? AND
@@ -49,8 +50,8 @@ func GetInterestValuesByMonthYear(db *sql.DB, month int, year int) (total, loss,
 func InsertInterestValues(values Entry, db *sql.DB) {
 	preparedStatement, err := db.Prepare(`
 		INSERT INTO 
-			daily_interests(date, source, total, loss, net)
-			VALUES(?,?,?,?,?)
+			daily_passive_income(date, source, asset_class, total, loss, net)
+			VALUES(?,?,?,?,?,?)
 	`)
 	utils.HandleError(err)
 	defer preparedStatement.Close()
@@ -58,6 +59,7 @@ func InsertInterestValues(values Entry, db *sql.DB) {
 	res, _ := preparedStatement.Exec(
 		values.Date,
 		values.Source,
+		values.AssetClass,
 		values.Total,
 		values.Loss,
 		values.Net)
@@ -92,11 +94,12 @@ func InsertPortfolioValues(values PortfolioValueEntry, db *sql.DB) {
 }
 
 type Entry struct {
-	Date   string
-	Source string
-	Total  float64
-	Loss   float64
-	Net    float64
+	Date       string
+	Source     string
+	AssetClass string
+	Total      float64
+	Loss       float64
+	Net        float64
 }
 
 type PortfolioValueEntry struct {

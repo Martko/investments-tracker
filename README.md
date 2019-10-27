@@ -1,7 +1,8 @@
 # investments-tracker
 
 ## Todo
-* better error handling
+
+- better error handling
 
 ## Dependencies
 
