@@ -12,8 +12,8 @@ import (
 
 const (
 	currencySeparator       = "\u00a0"
-	intrestRowNum           = 16 // Intrest incl.
-	lossRowNum              = 20 // Principal loss
+	intrestRowNum           = 17 // Intrest incl.
+	lossRowNum              = 21 // Principal loss
 	portfolioValueRowNum    = 5  // Portfolio balance
 	initialInvestmentRowNum = 1  // Money in the portal
 )
@@ -108,6 +108,7 @@ func getAvailableMoney(bow *browser.Browser) float64 {
 	return availableMoney
 }
 
+// FetchAndSaveToDb fetches data from the page and store in DB
 func FetchAndSaveToDb(bow *browser.Browser, currentDay int, currentMonth int, currentYear int) {
 	login(bow)
 
@@ -125,7 +126,7 @@ func FetchAndSaveToDb(bow *browser.Browser, currentDay int, currentMonth int, cu
 	db.InsertInterestValues(db.Entry{
 		Date:       utils.GetYesterdayYmd(),
 		Source:     "omaraha",
-		AssetClass: "loans_secured",
+		AssetClass: "loans_partially_secured",
 		Total:      total,
 		Loss:       loss,
 		Net:        net,
