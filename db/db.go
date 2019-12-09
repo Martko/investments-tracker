@@ -39,14 +39,14 @@ func GetInterestValuesByMonthYear(db *sql.DB, month int, year int) (total, loss,
 	if err != nil {
 		if err == sql.ErrNoRows {
 			return 0, 0, 0
-		} else {
-			utils.HandleError(err)
 		}
+		utils.HandleError(err)
 	}
 
 	return total, loss, net
 }
 
+// InsertInterestValues inserts interest values to DB
 func InsertInterestValues(values Entry, db *sql.DB) {
 	preparedStatement, err := db.Prepare(`
 		INSERT INTO 
@@ -66,10 +66,11 @@ func InsertInterestValues(values Entry, db *sql.DB) {
 
 	affectedRows, _ := res.RowsAffected()
 
-	log.Println("inserted to daily_interests", values)
+	log.Println("inserted to daily_passive_income", values)
 	log.Println("rows affected", affectedRows)
 }
 
+// InsertPortfolioValues inserts portfolio values to DB
 func InsertPortfolioValues(values PortfolioValueEntry, db *sql.DB) {
 	preparedStatement, err := db.Prepare(`
 		INSERT INTO 
