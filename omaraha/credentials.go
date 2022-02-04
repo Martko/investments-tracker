@@ -1,9 +1,10 @@
 package omaraha
 
 import (
+	"os"
+
 	"github.com/Martko/investments-tracker/utils"
 	"github.com/joho/godotenv"
-	"os"
 )
 
 func getWebPageCredentials() (username, password string) {

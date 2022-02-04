@@ -12,8 +12,8 @@ import (
 
 const (
 	currencySeparator       = "\u00a0"
-	intrestRowNum           = 17 // Intrest incl.
-	lossRowNum              = 21 // Principal loss
+	intrestRowNum           = 14 // Intrest incl.
+	lossRowNum              = 18 // Principal loss
 	portfolioValueRowNum    = 5  // Portfolio balance
 	initialInvestmentRowNum = 1  // Money in the portal
 )
@@ -22,7 +22,7 @@ func login(bow *browser.Browser) {
 	err := bow.Open("https://omaraha.ee/en/auth/login/")
 	utils.HandleError(err)
 
-	fm, err := bow.Form("form.uk-form.uk-form-horizontal")
+	fm, err := bow.Form("form.uk-form")
 	utils.HandleError(err)
 
 	username, password := getWebPageCredentials()
@@ -92,7 +92,7 @@ func getAvailableMoney(bow *browser.Browser) float64 {
 	rowCount := 0
 	var availableMoney float64
 
-	bow.Dom().Find(".uk-width-medium-2-3 table tbody tr").Each(func(_ int, s *goquery.Selection) {
+	bow.Dom().Find(".uk-width-1-1 table tbody tr").Each(func(_ int, s *goquery.Selection) {
 		columnCount := 0
 
 		s.Find("td").Each(func(_ int, e *goquery.Selection) {
@@ -112,7 +112,10 @@ func getAvailableMoney(bow *browser.Browser) float64 {
 func FetchAndSaveToDb(bow *browser.Browser, currentDay int, currentMonth int, currentYear int) {
 	login(bow)
 
+	// Page: https://omaraha.ee/en/accounts/home/
 	availableMoney := getAvailableMoney(bow)
+
+	// Page: https://omaraha.ee/en/invest/stats/
 	portfolio := getInterestValuesFromStatistics(bow, currentMonth)
 
 	connection := db.GetDbConnection()
